@@ -24,19 +24,43 @@ package cmd
 
 import (
 	ctx "context"
+	"encoding/json"
+	"fmt"
 	"io"
 
+	"github.com/purpleclay/misspell-codeclimate/internal/misspell"
 	"github.com/spf13/cobra"
 )
 
+type options struct {
+	ReportFile string
+}
+
 func Execute(out io.Writer) error {
+	opt := options{}
+
 	rootCmd := &cobra.Command{
-		Use:   "misspell-codeclimate",
-		Short: "Turn that misspell report into a GitLab compatible codeclimate report",
+		Use:          "misspell-codeclimate",
+		Short:        "Turn that misspell report into a GitLab compatible codeclimate report",
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			report, err := misspell.ParseReport(opt.ReportFile)
+			if err != nil {
+				return err
+			}
+
+			data, err := json.Marshal(report)
+			if err != nil {
+				return err
+			}
+
+			fmt.Fprintln(out, string(data))
 			return nil
 		},
 	}
+
+	rootCmd.Flags().StringVar(&opt.ReportFile, "file", "", "Path to the misspell report to parse")
+	rootCmd.MarkFlagRequired("file")
 
 	rootCmd.AddCommand(newVersionCmd(out))
 	rootCmd.AddCommand(newManPagesCmd(out))

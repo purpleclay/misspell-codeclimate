@@ -33,7 +33,7 @@ tasks:
   test:
     desc: Run the tests
     cmds:
-      - go test -race -vet=off -p 1 -covermode=atomic -coverprofile=unittest.out ./...
+      - go test -race -vet=off -p 1 -covermode=atomic -coverprofile=coverage.out ./...
 
   lint:
     desc: Lint the code using golangci
