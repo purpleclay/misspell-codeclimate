@@ -118,7 +118,7 @@ brews:
       name: homebrew-tap
     folder: Formula
     homepage: "https://github.com/purpleclay/misspell-codeclimate"
-    description: "Grab yourself a misspell-codeclimate and pour yourself some Homebrew"
+    description: "Turn that misspell report into a GitLab compatible codeclimate report"
     license: MIT
     install: |
       bin.install "misspell-codeclimate"
@@ -142,14 +142,14 @@ scoop:
     owner: purpleclay
     name: scoop-bucket
   homepage: "https://github.com/purpleclay/misspell-codeclimate"
-  description: "Grab yourself a misspell-codeclimate and pour yourself some Homebrew"
+  description: "Turn that misspell report into a GitLab compatible codeclimate report"
   license: MIT
 
 nfpms:
   - file_name_template: "{{ .ConventionalFileName }}"
     id: packages
     homepage: "https://github.com/purpleclay/misspell-codeclimate"
-    description: "Grab yourself a misspell-codeclimate and pour yourself some Homebrew"
+    description: "Turn that misspell report into a GitLab compatible codeclimate report"
     maintainer: Purple Clay <purpleclaygh@gmail.com>
     license: MIT
     vendor: Purple Clay
@@ -195,7 +195,7 @@ publishers:
 
 aurs:
   - homepage: "https://github.com/purpleclay/misspell-codeclimate"
-    description: "Dynamic DNS within Amazon Route53. Expose your EC2 quickly, easily and privately"
+    description: "Turn that misspell report into a GitLab compatible codeclimate report"
     maintainers:
       - "Purple Clay <purple clay at gmail dot com>"
     license: MIT
