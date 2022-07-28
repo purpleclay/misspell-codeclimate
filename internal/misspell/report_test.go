@@ -76,8 +76,8 @@ func TestParseReport_ReportNotFound(t *testing.T) {
 }
 
 func TestParseReport_UnsupportedReportFormat(t *testing.T) {
-	path := writeFile(t, "unexpected format in report")
+	path := writeFile(t, "unexpected format")
 
 	_, err := misspell.ParseReport(path)
-	assert.EqualError(t, err, "unsupported misspell report line, expecting report in default format")
+	assert.EqualError(t, err, "unsupported misspell report line, expecting report in default format. Received: unexpected format")
 }
