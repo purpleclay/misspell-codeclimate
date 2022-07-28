@@ -23,15 +23,17 @@ SOFTWARE.
 package misspell
 
 import (
+	"bufio"
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 )
 
-// CodeClimateEntry ...
+// CodeClimateEntry defines a Code Climate report containing all
+// identified code violations
 type CodeClimateEntry struct {
 	Description string               `json:"description"`
 	Fingerprint string               `json:"fingerprint"`
@@ -39,34 +41,38 @@ type CodeClimateEntry struct {
 	Location    CodeQualityViolation `json:"location"`
 }
 
-// CodeQualityViolation ...
+// CodeQualityViolation is used to report a violation within a code file
 type CodeQualityViolation struct {
 	Path  string                       `json:"path"`
 	Lines CodeQualityViolationPosition `json:"lines"`
 }
 
-// CodeQualityViolationPosition ...
+// CodeQualityViolationPosition is used to report the exact position
+// within the file where the violation has occurred
 type CodeQualityViolationPosition struct {
 	Begin int `json:"begin"`
 }
 
-// ParseReport ...
+// ParseReport will parse the provided misspell report into a Code Climate
+// format that is compatible with GitLab
 func ParseReport(reportPath string) ([]CodeClimateEntry, error) {
-	report, err := ioutil.ReadFile(reportPath)
+	report, err := os.Open(reportPath)
 	if err != nil {
 		return []CodeClimateEntry{}, err
 	}
+	defer report.Close()
 
-	// Split the report by new line and process each line in turn
-	lines := strings.Split(string(report), "\n")
+	entries := make([]CodeClimateEntry, 0)
 
-	entries := make([]CodeClimateEntry, 0, len(lines))
+	fileScanner := bufio.NewScanner(report)
+	fileScanner.Split(bufio.ScanLines)
 
-	// Split on the content of the report and process each line at a time
-	for _, line := range lines {
+	for fileScanner.Scan() {
+		line := fileScanner.Text()
+
 		parts := strings.Split(line, ":")
 		if len(parts) != 4 {
-			return []CodeClimateEntry{}, errors.New("unsupported misspell report line, expecting report in default format")
+			return []CodeClimateEntry{}, errors.New("unsupported misspell report line, expecting report in default format. Received: " + line)
 		}
 
 		violationPos, _ := strconv.Atoi(parts[1])
