@@ -23,7 +23,7 @@
 # Install script is heavily based on: https://github.com/Masterminds/glide.sh/blob/master/get
 
 : ${USE_SUDO:="true"}
-: ${DNS53_INSTALL_DIR:="/usr/local/bin"}
+: ${MISSPELL_CODECLIMATE_INSTALL_DIR:="/usr/local/bin"}
 
 HAS_CURL="$(type "curl" &> /dev/null && echo true || echo false)"
 HAS_WGET="$(type "wget" &> /dev/null && echo true || echo false)"
@@ -69,43 +69,43 @@ canDownload() {
 download() {
   if [ -z "$DESIRED_VERSION" ]; then
     if [ "${HAS_CURL}" == "true" ]; then
-      TAG="v$(curl -s https://api.github.com/repos/purpleclay/dns53/releases/latest | grep "tag_name" | cut -d'v' -f2 | cut -d'"' -f1)"
+      TAG="v$(curl -s https://api.github.com/repos/purpleclay/misspell-codeclimate/releases/latest | grep "tag_name" | cut -d'v' -f2 | cut -d'"' -f1)"
     elif [ "${HAS_WGET}" == "true" ]; then
-      TAG="v$(wget -q https://api.github.com/repos/purpleclay/dns53/releases/latest -O - 2>&1 | grep "tag_name" | cut -d'v' -f2 | cut -d'"' -f1)"
+      TAG="v$(wget -q https://api.github.com/repos/purpleclay/misspell-codeclimate/releases/latest -O - 2>&1 | grep "tag_name" | cut -d'v' -f2 | cut -d'"' -f1)"
     fi
   else
     TAG=${DESIRED_VERSION}
   fi
 
-  echo "Attempting to download dns53 ${TAG}..."
+  echo "Attempting to download misspell-codeclimate ${TAG}..."
 
   PACKAGE_TYPE="tar.gz"
   if [ "${OS}" == "windows" ]; then
     PACKAGE_TYPE="zip"
   fi
 
-  local archive="dns53_${TAG#v}_${OS}-${ARCH}.${PACKAGE_TYPE}"
+  local archive="misspell-codeclimate${TAG#v}_${OS}-${ARCH}.${PACKAGE_TYPE}"
 
-  DOWNLOAD_URL="https://github.com/purpleclay/dns53/releases/download/${TAG}/${archive}"
-  DOWNLOAD_DIR="$(mktemp -dt dns53-install-XXXXXXX)"
-  DNS53_FILE="${DOWNLOAD_DIR}/${archive}"
+  DOWNLOAD_URL="https://github.com/purpleclay/misspell-codeclimate/releases/download/${TAG}/${archive}"
+  DOWNLOAD_DIR="$(mktemp -dt misspell-codeclimate-install-XXXXXXX)"
+  MISSPELL_CODECLIMATE_FILE="${DOWNLOAD_DIR}/${archive}"
 
   if [ "${HAS_CURL}" == "true" ]; then
-    curl -L "$DOWNLOAD_URL" -o "$DNS53_FILE"
+    curl -L "$DOWNLOAD_URL" -o "$MISSPELL_CODECLIMATE_FILE"
   elif [ "${HAS_WGET}" == "true" ]; then
-    wget -q -O "$DNS53_FILE" "$DOWNLOAD_URL"
+    wget -q -O "$MISSPELL_CODECLIMATE_FILE" "$DOWNLOAD_URL"
   fi
 }
 
 install() {
-  echo "Installing dns53..."
+  echo "Installing misspell-codeclimate..."
 
-  local extract_dir="$DOWNLOAD_DIR/dns53-$TAG"
+  local extract_dir="$DOWNLOAD_DIR/misspell-codeclimate-$TAG"
   mkdir -p $extract_dir
-  tar xf "$DNS53_FILE" -C "${extract_dir}"
-  runAsRoot cp "${extract_dir}/dns53" "${DNS53_INSTALL_DIR}/dns53"
+  tar xf "$MISSPELL_CODECLIMATE_FILE" -C "${extract_dir}"
+  runAsRoot cp "${extract_dir}/misspell-codeclimate" "${MISSPELL_CODECLIMATE_INSTALL_DIR}/misspell-codeclimate"
 
-  echo "Installed dns53 to ${DNS53_INSTALL_DIR}"
+  echo "Installed misspell-codeclimate to ${MISSPELL_CODECLIMATE_INSTALL_DIR}"
 }
 
 runAsRoot() {
@@ -125,16 +125,16 @@ tidy() {
 
 verify() {
   set +e
-  DNS53="$(command -v dns53)"
+  MISSPELL_CODECLIMATE="$(command -v misspell-codeclimate)"
   if [ "$?" = "1" ]; then
-    echo "dns53 not found. Is ${DNS53_INSTALL_DIR} on your "'$PATH?'
+    echo "misspell-codeclimate not found. Is ${MISSPELL_CODECLIMATE_INSTALL_DIR} on your "'$PATH?'
     exit 1
   fi
 
   # Test version
-  INSTALLED_VERSION="$(dns53 version --short)"
+  INSTALLED_VERSION="$(misspell-codeclimate version --short)"
   if [ "${INSTALLED_VERSION}" != "${TAG}" ]; then
-    echo "Found version ${INSTALLED_VERSION} of dns53 and not expected installed version of $TAG"
+    echo "Found version ${INSTALLED_VERSION} of misspell-codeclimate and not expected installed version of $TAG"
     exit 1
   fi
   set -e
@@ -143,14 +143,14 @@ verify() {
 bye() {
   local result=$?
 	if [ "$result" != "0" ]; then
-		echo "Failed to install dns53"
+		echo "Failed to install misspell-codeclimate"
 	fi
   tidy
 	exit $result
 }
 
 help () {
-  echo "dns53 install"
+  echo "misspell-codeclimate install"
   echo
   echo "Flags:"
   echo -e "  -h, --help     print help for the installer"
