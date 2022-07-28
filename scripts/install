@@ -84,7 +84,7 @@ download() {
     PACKAGE_TYPE="zip"
   fi
 
-  local archive="misspell-codeclimate${TAG#v}_${OS}-${ARCH}.${PACKAGE_TYPE}"
+  local archive="misspell-codeclimate_${TAG#v}_${OS}-${ARCH}.${PACKAGE_TYPE}"
 
   DOWNLOAD_URL="https://github.com/purpleclay/misspell-codeclimate/releases/download/${TAG}/${archive}"
   DOWNLOAD_DIR="$(mktemp -dt misspell-codeclimate-install-XXXXXXX)"
